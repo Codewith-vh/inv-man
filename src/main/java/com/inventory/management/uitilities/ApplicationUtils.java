@@ -2,9 +2,13 @@ package com.inventory.management.uitilities;
 
 import com.inventory.management.dto.outbound.OutInventory;
 import com.inventory.management.dto.outbound.ProductData;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
+@Component
+@Slf4j
 public class ApplicationUtils {
     public void handleSoldTransaction(com.inventory.management.dto.inbound.StockTransaction stockTransaction, OutInventory inventory) {
         ArrayList<ProductData> removal = new ArrayList<>();
