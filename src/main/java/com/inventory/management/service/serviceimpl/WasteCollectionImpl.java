@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class WasteCollectionImpl implements WasteCollection {
     @Override
     public String remove(String wastageCollection) {
-        return"";
+return "ok";
 
     }
 }

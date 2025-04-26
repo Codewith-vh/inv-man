@@ -1,4 +1,4 @@
-package com.inventory.management.dto.inventorycollectiondto;
+package com.inventory.management.dto.outbound;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inventory.management.service.WasteCollection;

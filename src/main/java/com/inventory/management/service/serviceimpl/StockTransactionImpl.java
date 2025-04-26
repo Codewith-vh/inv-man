@@ -1,49 +1,49 @@
 package com.inventory.management.service.serviceimpl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inventory.management.dto.inventorycollectiondto.Inventory;
-import com.inventory.management.dto.inventorycollectiondto.StockTransactionCollectionSet;
+import com.inventory.management.dto.inbound.StockTransactionCollectionSet;
+import com.inventory.management.dto.outbound.OutInventory;
 import com.inventory.management.repository.InventoryProductDB;
 import com.inventory.management.service.StockTransaction;
+import com.inventory.management.uitilities.ApplicationUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static com.inventory.management.uitilities.ApplicationConstants.ARRIVAL;
 
 @Service
 @Slf4j
 public class StockTransactionImpl implements StockTransaction {
 
+    private final InventoryProductDB inventoryProductDB;
+    private final ApplicationUtils applicationUtils;
+    public StockTransactionImpl(InventoryProductDB inventoryProductDB, ApplicationUtils applicationUtils){
+        this.inventoryProductDB = inventoryProductDB;
+        this.applicationUtils =  applicationUtils;
+    }
 
-    @Autowired
-    InventoryProductDB inventoryProductDB;
 
-
-    @Override
-    public String save(String stocktransaction) throws Exception {
+    public String save(StockTransactionCollectionSet stocktransaction) throws Exception {
         try {
-            log.info(stocktransaction);
-            ObjectMapper objectMapper = new ObjectMapper();
-            StockTransactionCollectionSet data = objectMapper.readValue(stocktransaction, StockTransactionCollectionSet.class);
-                data.getStockTransactionCollection().getStockTransaction().stream()
-                        .filter(stockTransaction -> stockTransaction.getType().equalsIgnoreCase("Arrival"))
-                        .forEach(stockTransaction -> {
+            stocktransaction.getStockTransactionCollection().getStockTransaction().forEach(stockTransaction -> {
+                Optional<OutInventory> optInv = inventoryProductDB.findByProductId(stockTransaction.getInventoryId());
+                if(optInv.isPresent()) {
+                    OutInventory inventory= optInv.get();
+                    if (stockTransaction.getType().equalsIgnoreCase(ARRIVAL)) {
+                        applicationUtils.handleArrivalTransaction(stockTransaction, inventory);
+                    } else {
+                        applicationUtils.handleSoldTransaction(stockTransaction, inventory);
+                    }
+                    inventoryProductDB.save(inventory);
 
-                            Optional<Inventory> inventory = inventoryProductDB.findByProductId(stockTransaction.getInventoryId());
-                            log.info(String.valueOf(inventory));
-                            if (inventory.isPresent()) {
-                                inventory.get().setQuantity(inventory.get().getQuantity() + stockTransaction.getQuantity());
-                                inventory.get().setUpdatedAt(stockTransaction.getTimestamp());
-                                inventoryProductDB.save(inventory.get());
-                            } else {
-                                log.info("Please configure the product: "+stockTransaction.getInventoryId());
-                            }
-                        });
-
+                }
+            });
             return "Saved Successfully";
         } catch (Exception e) {
             throw new Exception(e);
         }
     }
+
+
 }

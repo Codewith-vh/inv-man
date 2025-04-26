@@ -1,7 +1,6 @@
-package com.inventory.management.dto.inventorycollectiondto;
+package com.inventory.management.dto.outbound;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.xml.bind.annotation.XmlElement;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,10 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Data
-public class StockTransactionCollection {
+@Document(collection = "wastageCollection")
+public class WasteCollection {
     @Id
     private String id;
-    @JsonProperty("StockTransaction")
-    private List<StockTransaction> stockTransaction;
+    @JsonProperty("WastageCollection")
+    private List<Wastage> wastage;
 
 }

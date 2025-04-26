@@ -1,4 +1,4 @@
-package com.inventory.management.dto.inventorycollectiondto;
+package com.inventory.management.dto.inbound;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
