@@ -3,12 +3,14 @@ package com.inventory.management.controller;
 
 import com.inventory.management.dto.inbound.InventoryCollectionSet;
 import com.inventory.management.dto.inbound.StockTransactionCollectionSet;
+import com.inventory.management.dto.outbound.WasteCollection;
 import com.inventory.management.service.serviceimpl.InventoryCollectionServiceImpl;
 import com.inventory.management.service.serviceimpl.StockTransactionImpl;
 import com.inventory.management.service.serviceimpl.WasteCollectionImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,8 +47,8 @@ public class InventoryManagementController {
         return stockTransactionImpl.save(stockTransactionCollection);
     }
 
-//    @GetMapping(value= "/wastageCollection")
-//    public WasteCollectionSet wastageCollection() throws Exception {
-//
-//    }
+    @GetMapping(value= "/wastageCollection")
+    public WasteCollection wastageCollection() throws Exception {
+        return wasteCollectionImpl.remove();
+    }
 }
